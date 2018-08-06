@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app v-bind:class="weatherStyle">
+    <v-app v-bind:class="weatherComputed">
       <v-navigation-drawer
         persistent
         :clipped="clipped"
@@ -28,7 +28,7 @@
         </v-list>
       </v-navigation-drawer>
       <v-toolbar
-        v-bind:class="weatherStyle"
+        v-bind:class="weatherComputed"
         app
         :clipped-left="clipped"
       >
@@ -65,33 +65,18 @@ export default {
         },
       ],
       title: 'PWAir',
-      weather: 'normal',
-      weatherStyle: ''
-    }
-  },
-  created() {
-    switch (this.weather) {
-      case 'good':
-        return this.weatherStyle = 'green accent-4'
-      case 'normal':
-        return this.weatherStyle = 'orange lighten-1'
-      case 'bad':
-        return this.weatherStyle = 'error'
-      default:
-        break;
+      weather: 'normal'
     }
   },
   computed: {
     weatherComputed() {
       switch (this.weather) {
         case 'good':
-          return this.weatherStyle = 'green accent-4'
+          return 'green accent-4'
         case 'normal':
-          return this.weatherStyle = 'orange lighten-1'
+          return 'orange lighten-1'
         case 'bad':
-          return this.weatherStyle = 'error'
-        default:
-          break;
+          return 'error'
       }
     }
   }
