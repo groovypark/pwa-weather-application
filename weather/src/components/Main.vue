@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app class="error">
+    <v-app v-bind:class="weatherStyle">
       <v-navigation-drawer
         persistent
         :clipped="clipped"
@@ -28,7 +28,7 @@
         </v-list>
       </v-navigation-drawer>
       <v-toolbar
-        class="error"
+        v-bind:class="weatherStyle"
         app
         :clipped-left="clipped"
       >
@@ -36,18 +36,18 @@
         <v-toolbar-title v-text="title" class="text-white"></v-toolbar-title>
       </v-toolbar>
       <v-content>
-        <WeatherBad/>
+        <Weather/>
       </v-content>
     </v-app>
   </div>
 </template>
 
 <script>
-import WeatherBad from './WeatherBad.vue'
+import Weather from './Weather.vue'
 
 export default {
   components: {
-    WeatherBad
+    Weather
   },
   data () {
     return {
@@ -64,7 +64,35 @@ export default {
           title: 'Logout'
         },
       ],
-      title: 'PWAir'
+      title: 'PWAir',
+      weather: 'normal',
+      weatherStyle: ''
+    }
+  },
+  created() {
+    switch (this.weather) {
+      case 'good':
+        return this.weatherStyle = 'green accent-4'
+      case 'normal':
+        return this.weatherStyle = 'orange lighten-1'
+      case 'bad':
+        return this.weatherStyle = 'error'
+      default:
+        break;
+    }
+  },
+  computed: {
+    weatherComputed() {
+      switch (this.weather) {
+        case 'good':
+          return this.weatherStyle = 'green accent-4'
+        case 'normal':
+          return this.weatherStyle = 'orange lighten-1'
+        case 'bad':
+          return this.weatherStyle = 'error'
+        default:
+          break;
+      }
     }
   }
 }
