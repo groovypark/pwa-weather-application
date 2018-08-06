@@ -27,16 +27,14 @@
           </v-list-tile>
         </v-list>
       </v-navigation-drawer>
-      <v-toolbar
-        v-bind:class="weatherComputed"
-        app
-        :clipped-left="clipped"
-      >
+      <v-toolbar v-bind:class="weatherComputed" app :clipped-left="clipped">
         <v-toolbar-side-icon @click.stop="drawer = !drawer" class="text-white"></v-toolbar-side-icon>
         <v-toolbar-title v-text="title" class="text-white"></v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon><v-icon class="text-white">refresh</v-icon></v-btn>
       </v-toolbar>
       <v-content>
-        <Weather/>
+        <Weather v-bind:weather="weather"/>
       </v-content>
     </v-app>
   </div>

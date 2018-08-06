@@ -2,10 +2,10 @@
   <div class="login text-white">
     <h1>PWAir</h1>
     <p>open the window when we push you</p>
-    <div class="icons">
-      <v-icon large>sentiment_very_satisfied</v-icon>
-      <v-icon large>sentiment_satisfied</v-icon>
-      <v-icon large>sentiment_very_dissatisfied</v-icon>
+    <div class="icon-div">
+      <v-icon x-large class="icon">sentiment_very_satisfied</v-icon>
+      <v-icon x-large class="icon">sentiment_satisfied</v-icon>
+      <v-icon x-large class="icon">sentiment_very_dissatisfied</v-icon>
     </div>
     <div class="login-box">
       <ul>
@@ -40,19 +40,23 @@ export default {
     background: skyblue;
   }
   h1 {
-    font-size: 40px;
+    font-size: 50px;
     font-weight: 800;
     padding-top: 90px;
   }
   p {
     color: rgba(255,255,255,0.8)
   }
-  .icons {
+  .icon-div {
     padding-bottom: 20px;
+    padding-left: 10px;
+  }
+  .icon {
+    padding-right: 10px;
   }
   .login-box {
     height: 190px;
-    width: 300px;
+    width: 280px;
     background: white;
     display: inline-block;
     text-align: center;

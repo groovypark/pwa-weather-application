@@ -1,15 +1,18 @@
 <template>
   <v-container fluid class="text-white">
     <v-slide-y-transition mode="out-in">
-      <v-layout column align-center>
-        <blockquote>
-          &#8220;First, solve the problem. Then, write the code.&#8221;
-          <footer>
-            <small>
-              <em>&mdash;John Johnson</em>
-            </small>
-          </footer>
-        </blockquote>
+      <v-layout v-layout justify-center>
+        <div class="weather-icon">
+          <v-icon v-if="weather === 'good'">
+            sentiment_very_satisfied
+          </v-icon>
+          <v-icon v-if="weather === 'normal'">
+            sentiment_satisfied
+          </v-icon>
+          <v-icon v-if="weather === 'bad'">
+            sentiment_very_dissatisfied
+          </v-icon>
+        </div>
       </v-layout>
     </v-slide-y-transition>
   </v-container>
@@ -18,22 +21,16 @@
 <script>
 export default {
   props: {
-    msg: String
+    weather: String
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
+.weather-icon > .v-icon {
+  /* height: 50px; */
+  color: white;
+  font-size: 90px;
 }
 </style>
