@@ -14,10 +14,11 @@
           </v-icon>
         </div>
         <div class="temperature">
-          87
+          80
         </div>
         <p>
           강남구의 대기는 지금 보통!
+          <button v-on:click="getAirCondition">test</button>
         </p>
         <v-layout align-center justify-center row fill-height>
           <div class="dust">
@@ -32,9 +33,72 @@
 </template>
 
 <script>
+import {token, clientId} from "../../config/config.js";
+import {getLocation, showError} from "../api/geolocation.js";
+import {getAddressFromGeocode} from "../api/navermap.js";
+import {getRealtimeCityAir, parseAirResult} from "../api/seoul.js";
+
 export default {
   props: {
     weather: String
+  },
+  methods :{
+    getAirCondition(){
+
+      getLocation()
+        .then(position => {
+          console.log(position.coords.latitude + " : " +position.coords.longitude);
+          naver.maps.Service.reverseGeocode(
+          {
+            location: new naver.maps.LatLng(position.coords.latitude, position.coords.longitude),
+          },
+          // getAddressFromGeocode(37.3595704, 127.105399)
+            function (status, response) {
+              if (status !== naver.maps.Service.Status.OK) {
+                return alert('Something wrong!');
+              }
+
+              var result = response.result, // 검색 결과의 컨테이너
+                items = result.items; // 검색 결과의 배열
+              console.log("Naver result " + result);
+              console.log(items);
+              console.log(result.items[0]['addrdetail']['sigugun']);
+              const sigugon=result.items[0]['addrdetail']['sigugun'];
+              getRealtimeCityAir('도심권', sigugon)
+                .then(result => {
+                  debugger;
+                  console.log(result);
+                  const airInfo = parseAirResult(result);
+                  console.log(airInfo);
+                  debugger;
+
+                  const airJisu=airInfo['IDEX_MVL'];
+                  const airCondition = airInfo['IDEX_NM'];
+                  console.log(airJisu + " : " + airCondition);
+                  return airInfo;
+                });
+              // return response;
+              // do Something
+             }
+          )
+        })
+        .catch(error => {
+          console.log("ERROR!! " + showError(error));
+        })
+
+    }
+    ,
+    getLocationAir(gwonyeok, goo){
+      getRealtimeCityAir('동북권', '성북구')
+    .then(result => {
+        console.log(result);
+        const airInfo = parseAirResult(result);
+        console.log(airInfo);
+        debugger;
+        return airInfo;
+      }
+    );
+    }
   }
 }
 </script>

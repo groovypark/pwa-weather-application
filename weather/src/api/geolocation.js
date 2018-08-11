@@ -1,7 +1,7 @@
 export function getLocation() {
-  if (navigator.geolocation) {
+  if (window.navigator.geolocation) {
     return new Promise(function (resolve, reject) {
-      navigator.geolocation.getCurrentPosition(resolve, reject, options);
+      window.navigator.geolocation.getCurrentPosition(resolve, reject, {});
     });
   } else {
     console.log("Geolocation is not supported by this browser.");

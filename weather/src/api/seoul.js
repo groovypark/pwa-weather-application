@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 import axios from 'axios';
 import {token} from '../../config/config.js';
 
