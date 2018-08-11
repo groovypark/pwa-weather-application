@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import {token, clientId} from "../../config/config.js";
+import {token, clientId, getGwonyeokFromSigugun} from "../../config/config.js";
 import {getLocation, showError} from "../api/geolocation.js";
 import {getAddressFromGeocode} from "../api/navermap.js";
 import {getRealtimeCityAir, parseAirResult} from "../api/seoul.js";
@@ -64,14 +64,12 @@ export default {
               console.log(items);
               console.log(result.items[0]['addrdetail']['sigugun']);
               const sigugon=result.items[0]['addrdetail']['sigugun'];
-              getRealtimeCityAir('도심권', sigugon)
+              const gwonyeok = getGwonyeokFromSigugun(sigugon);
+              getRealtimeCityAir(gwonyeok, sigugon)
                 .then(result => {
-                  debugger;
                   console.log(result);
                   const airInfo = parseAirResult(result);
                   console.log(airInfo);
-                  debugger;
-
                   const airJisu=airInfo['IDEX_MVL'];
                   const airCondition = airInfo['IDEX_NM'];
                   console.log(airJisu + " : " + airCondition);
