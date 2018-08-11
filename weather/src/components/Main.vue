@@ -34,7 +34,7 @@
         <v-btn icon><v-icon class="text-white">refresh</v-icon></v-btn>
       </v-toolbar>
       <v-content>
-        <Weather v-bind:weather="weather"/>
+        <Weather v-bind:airCondition="airCondition"/>
       </v-content>
     </v-app>
   </div>
@@ -42,6 +42,10 @@
 
 <script>
 import Weather from './Weather.vue'
+import {token, clientId, getGwonyeokFromSigugun} from "../../config/config.js";
+import {getLocation, showError} from "../api/geolocation.js";
+import {getAddressFromGeocode} from "../api/navermap.js";
+import {getRealtimeCityAir, parseAirResult} from "../api/seoul.js";
 
 export default {
   components: {
@@ -63,12 +67,57 @@ export default {
         },
       ],
       title: 'PWAir',
-      weather: 'normal'
+      airCondition: 'normal',
+      airJisu: 0
     }
+  },
+  created(){
+      getLocation()
+        .then(position => {
+          console.log(position.coords.latitude + " : " +position.coords.longitude);
+          naver.maps.Service.reverseGeocode(
+          {
+            location: new naver.maps.LatLng(position.coords.latitude, position.coords.longitude),
+          },
+          // getAddressFromGeocode(37.3595704, 127.105399)
+            function (status, response) {
+              if (status !== naver.maps.Service.Status.OK) {
+                return alert('Something wrong!');
+              }
+
+              var result = response.result, // 검색 결과의 컨테이너
+                items = result.items; // 검색 결과의 배열
+              console.log("Naver result " + result);
+              console.log(items);
+              console.log(result.items[0]['addrdetail']['sigugun']);
+              const sigugon=result.items[0]['addrdetail']['sigugun'];
+              const gwonyeok = getGwonyeokFromSigugun(sigugon);
+              getRealtimeCityAir(gwonyeok, sigugon)
+                .then(result => {
+                  console.log(result);
+                  const airInfo = parseAirResult(result);
+                  console.log(airInfo);
+                  const _airJisu=airInfo['IDEX_MVL'];
+                  const _airCondition = airInfo['IDEX_NM'];
+                  console.log(this);
+                  
+                  this.airJisu = _airJisu;
+                  this.airCondition = _airCondition;
+                  console.log(airJisu + " : " + airCondition);
+                  return airInfo;
+                });
+              // return response;
+              // do Something
+             }
+          )
+        })
+        .catch(error => {
+          console.log("ERROR!! " + showError(error));
+        })
   },
   computed: {
     weatherComputed() {
-      switch (this.weather) {
+      switch (this.airCondition) {
         case 'good':
           return 'green accent-4'
         case 'normal':
