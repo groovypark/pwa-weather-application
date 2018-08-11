@@ -21,15 +21,23 @@
       </ul>
     </div>
     <div class="social-login-div">
-      <router-link to="/main"><v-btn round class="social-login-btn">google</v-btn></router-link>
+      <!-- <router-link to="/main"> -->
+        <v-btn v-on:click="signInWithGoogle" round class="social-login-btn">
+          google
+        </v-btn>
+      <!-- </router-link> -->
       <router-link to="/main"><v-btn round class="social-login-btn">facebook</v-btn></router-link>
     </div>
   </div>
 </template>
 
 <script>
-export default {
+import signInWithGoogle from '../auth/googleAuth.js'
 
+export default {
+  methods: {
+    signInWithGoogle
+  }
 }
 </script>
 
