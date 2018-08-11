@@ -46,6 +46,10 @@ module.exports = {
     extensions: ['*', '.js', '.vue', '.json']
   },
   devServer: {
+    // https: true,
+    // cert: './key/localhost.crt',
+    // key: './key/localhost.key',
+    port: 8080,
     historyApiFallback: true,
     noInfo: true,
     overlay: true
