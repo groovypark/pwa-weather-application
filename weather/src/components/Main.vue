@@ -34,7 +34,7 @@
         <v-btn icon><v-icon class="text-white">refresh</v-icon></v-btn>
       </v-toolbar>
       <v-content>
-        <Weather v-bind:airCondition="airCondition"/>
+        <Weather v-bind:airCondition="airCondition" v-bind:airJisu="airJisu" v-bind:sigugon="sigugon"/>
       </v-content>
     </v-app>
   </div>
@@ -46,6 +46,7 @@ import {token, clientId, getGwonyeokFromSigugun} from "../../config/config.js";
 import {getLocation, showError} from "../api/geolocation.js";
 import {getAddressFromGeocode} from "../api/navermap.js";
 import {getRealtimeCityAir, parseAirResult} from "../api/seoul.js";
+import {AIR_CONDITION} from '../constant/airCondition.js'
 
 export default {
   components: {
@@ -54,7 +55,7 @@ export default {
   data () {
     return {
       clipped: false,
-      drawer: true,
+      drawer: false,
       fixed: false,
       items: [
         {
@@ -67,46 +68,41 @@ export default {
         },
       ],
       title: 'PWAir',
-      airCondition: 'normal',
-      airJisu: 0
+      airCondition: '보통',
+      airJisu: 0,
+      sigugon: '시구군'
     }
   },
   created(){
       getLocation()
         .then(position => {
-          console.log(position.coords.latitude + " : " +position.coords.longitude);
           naver.maps.Service.reverseGeocode(
           {
-            location: new naver.maps.LatLng(position.coords.latitude, position.coords.longitude),
+            // location: new naver.maps.LatLng(position.coords.latitude, position.coords.longitude),
+            location: new naver.maps.LatLng(37.551770, 126.926041),
           },
           // getAddressFromGeocode(37.3595704, 127.105399)
-            function (status, response) {
+            (status, response) => {
               if (status !== naver.maps.Service.Status.OK) {
                 return alert('Something wrong!');
               }
 
               var result = response.result, // 검색 결과의 컨테이너
                 items = result.items; // 검색 결과의 배열
-              console.log("Naver result " + result);
-              console.log(items);
-              console.log(result.items[0]['addrdetail']['sigugun']);
               const sigugon=result.items[0]['addrdetail']['sigugun'];
               const gwonyeok = getGwonyeokFromSigugun(sigugon);
               getRealtimeCityAir(gwonyeok, sigugon)
                 .then(result => {
-                  console.log(result);
                   const airInfo = parseAirResult(result);
-                  console.log(airInfo);
                   const _airJisu=airInfo['IDEX_MVL'];
                   const _airCondition = airInfo['IDEX_NM'];
-                  console.log(this);
                   
                   this.airJisu = _airJisu;
                   this.airCondition = _airCondition;
-                  console.log(airJisu + " : " + airCondition);
+                  this.sigugon = sigugon
                   return airInfo;
                 });
-              // return response;
+              return response;
               // do Something
              }
           )
@@ -118,11 +114,15 @@ export default {
   computed: {
     weatherComputed() {
       switch (this.airCondition) {
-        case 'good':
+        case AIR_CONDITION.GOOD:
           return 'green accent-4'
-        case 'normal':
+        case AIR_CONDITION.NORMAL:
           return 'orange lighten-1'
-        case 'bad':
+        case AIR_CONDITION.BAD:
+          return 'error'
+        case AIR_CONDITION.VERY_BAD:
+          return 'error'
+        default:
           return 'error'
       }
     }

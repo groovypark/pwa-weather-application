@@ -3,13 +3,13 @@
     <v-slide-y-transition mode="out-in">
       <v-layout justify-center column>
         <div class="weather-icon">
-          <v-icon v-if="airCondition === 'good'">
+          <v-icon v-if="airCondition === AIR_CONDITION.GOOD">
             sentiment_very_satisfied
           </v-icon>
-          <v-icon v-if="airCondition === 'normal'">
+          <v-icon v-if="airCondition === AIR_CONDITION.NORMAL">
             sentiment_satisfied
           </v-icon>
-          <v-icon v-if="airCondition === 'bad'">
+          <v-icon v-if="airCondition === AIR_CONDITION.BAD || airCondition === AIR_CONDITION.VERY_BAD">
             sentiment_very_dissatisfied
           </v-icon>
         </div>
@@ -17,7 +17,7 @@
           {{airJisu}}
         </div>
         <p>
-          강남구의 대기는 지금 보통!
+          {{sigugon}}의 대기는 지금 {{airCondition}}!
         </p>
         <v-layout align-center justify-center row fill-height>
           <div class="dust">
@@ -36,11 +36,18 @@ import {token, clientId, getGwonyeokFromSigugun} from "../../config/config.js";
 import {getLocation, showError} from "../api/geolocation.js";
 import {getAddressFromGeocode} from "../api/navermap.js";
 import {getRealtimeCityAir, parseAirResult} from "../api/seoul.js";
+import {AIR_CONDITION} from '../constant/airCondition.js'
 
 export default {
   props: {
     airJisu: Number,
-    airCondition: String
+    airCondition: String,
+    sigugon: String
+  },
+  data (){
+    return {
+      AIR_CONDITION
+    }
   },
   methods :{
     getLocationAir(gwonyeok, goo){
