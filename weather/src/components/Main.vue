@@ -34,7 +34,13 @@
         <v-btn icon><v-icon class="text-white">refresh</v-icon></v-btn>
       </v-toolbar>
       <v-content>
-        <Weather v-bind:airCondition="airCondition" v-bind:airJisu="airJisu" v-bind:sigugon="sigugon"/>
+        <Weather
+          v-bind:airCondition="airCondition"
+          v-bind:airJisu="airJisu"
+          v-bind:sigugon="sigugon"
+          v-bind:dust="dust"
+          v-bind:ozone="ozone"
+          v-bind:ultrafineDust="ultrafineDust"/>
       </v-content>
     </v-app>
   </div>
@@ -42,9 +48,10 @@
 
 <script>
 import Weather from './Weather.vue'
-import {token, clientId, getGwonyeokFromSigugun} from "../../config/config.js";
+import {getGwonyeokFromSigugun} from "../../config/config.js";
+// token, clientId, 
 import {getLocation, showError} from "../api/geolocation.js";
-import {getAddressFromGeocode} from "../api/navermap.js";
+// import {getAddressFromGeocode} from "../api/navermap.js";
 import {getRealtimeCityAir, parseAirResult} from "../api/seoul.js";
 import {AIR_CONDITION} from '../constant/airCondition.js'
 
@@ -70,7 +77,10 @@ export default {
       title: 'PWAir',
       airCondition: '보통',
       airJisu: 0,
-      sigugon: '시구군'
+      sigugon: '시구군',
+      dust: 0,
+      ozone: 0,
+      ultrafineDust: 0
     }
   },
   created(){
@@ -78,8 +88,8 @@ export default {
         .then(position => {
           naver.maps.Service.reverseGeocode(
           {
-            // location: new naver.maps.LatLng(position.coords.latitude, position.coords.longitude),
-            location: new naver.maps.LatLng(37.551770, 126.926041),
+            location: new naver.maps.LatLng(position.coords.latitude, position.coords.longitude),
+            // location: new naver.maps.LatLng(37.551770, 126.926041),
           },
           // getAddressFromGeocode(37.3595704, 127.105399)
             (status, response) => {
@@ -87,19 +97,20 @@ export default {
                 return alert('Something wrong!');
               }
 
-              var result = response.result, // 검색 결과의 컨테이너
-                items = result.items; // 검색 결과의 배열
+              var result = response.result; // 검색 결과의 컨테이너
+              // var items = result.items; // 검색 결과의 배열
               const sigugon=result.items[0]['addrdetail']['sigugun'];
               const gwonyeok = getGwonyeokFromSigugun(sigugon);
               getRealtimeCityAir(gwonyeok, sigugon)
                 .then(result => {
                   const airInfo = parseAirResult(result);
-                  const _airJisu=airInfo['IDEX_MVL'];
-                  const _airCondition = airInfo['IDEX_NM'];
                   
-                  this.airJisu = _airJisu;
-                  this.airCondition = _airCondition;
+                  this.airJisu = airInfo['IDEX_MVL'];
+                  this.airCondition = airInfo['IDEX_NM'];
                   this.sigugon = sigugon
+                  this.dust = airInfo['PM10']
+                  this.ozone = airInfo['O3'],
+                  this.ultrafineDust = airInfo['PM25']
                   return airInfo;
                 });
               return response;

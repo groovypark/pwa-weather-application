@@ -21,9 +21,9 @@
         </p>
         <v-layout align-center justify-center row fill-height>
           <div class="dust">
-            <div>미세먼지</div>
-            <div>오존</div>
-            <div>초미세먼지</div>
+            <li><b>미세먼지</b> {{dust}}㎍/㎥</li>
+            <li><b>오존</b> {{ozone}}ppm</li>
+            <li><b>초미세먼지</b> {{ultrafineDust}}㎍/㎥</li>
           </div>
         </v-layout>
       </v-layout>
@@ -32,35 +32,22 @@
 </template>
 
 <script>
-import {token, clientId, getGwonyeokFromSigugun} from "../../config/config.js";
-import {getLocation, showError} from "../api/geolocation.js";
-import {getAddressFromGeocode} from "../api/navermap.js";
-import {getRealtimeCityAir, parseAirResult} from "../api/seoul.js";
 import {AIR_CONDITION} from '../constant/airCondition.js'
 
 export default {
   props: {
     airJisu: Number,
     airCondition: String,
-    sigugon: String
+    sigugon: String,
+    dust: Number,
+    ozone: Number,
+    ultrafineDust: Number
   },
   data (){
     return {
       AIR_CONDITION
     }
   },
-  methods :{
-    getLocationAir(gwonyeok, goo){
-      getRealtimeCityAir('동북권', '성북구')
-    .then(result => {
-        console.log(result);
-        const airInfo = parseAirResult(result);
-        console.log(airInfo);
-        return airInfo;
-      }
-    );
-    }
-  }
 }
 </script>
 
@@ -84,6 +71,7 @@ li {
   list-style: none;
   width:10em;
   float: left;
+  padding: 2px;
 }
 .dust {
   background-color: rgba(255, 255, 255, 0.5);
@@ -91,5 +79,8 @@ li {
   height: 30%;
   position: absolute;
   bottom: 0;
+  font-size: 18px;
+  padding-top: 12%;
+  padding-left: 25%;
 }
 </style>
