@@ -3,12 +3,8 @@ import { provider } from '../../config/firebaseConfig'
 
 export default function signInWithGoogle() {
   firebase.auth().signInWithPopup(provider).then(function (result) {
-    var token = result.credential.accessToken;
-    var user = result.user;
+    self.$router.push({path: '/main'});
   }).catch(function (error) {
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    var email = error.email;
-    var credential = error.credential;
+    console.log("errorCode: " + error.code + ". errorMessage : " + error.message + ". email : " + error.email);
   });
 }
