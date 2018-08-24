@@ -10,7 +10,7 @@ config.json example
   "clientId" : "clientId of your naver API application"
 }
 ```
-
+서울시 공공 API: http://data.seoul.go.kr/dataList/datasetView.do?infId=OA-2219&srvType=S&serviceKind=1&currentPageNo=1
 
 
 > A Vue.js project
